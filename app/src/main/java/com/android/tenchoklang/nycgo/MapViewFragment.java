@@ -26,11 +26,14 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
 
 /**
  * Created by tench on 4/30/2018.
  */
-public class MapViewFragment extends Fragment implements UserLocationListener.OnLocationListener{
+public class MapViewFragment extends Fragment implements UserLocationListener.OnLocationListener, GetJsonData.OnDataAvailable{
 
     private static final String TAG = "MapViewFragment";
     MapView mMapView;
@@ -95,7 +98,7 @@ public class MapViewFragment extends Fragment implements UserLocationListener.On
             public void onClick(View view) {
                 //this would launch the NYC Open data API to get the Crime around specified by the distance
                 Toast.makeText(getContext(), "LAT: " + lat + " LON: "+ lon,Toast.LENGTH_SHORT).show();
-
+                getData();
                 //this is where we make the call to the NYC Open Data to get the Crime Information
             }
         });
@@ -266,10 +269,38 @@ public class MapViewFragment extends Fragment implements UserLocationListener.On
         }
     }
 
+    private void getData(){
+        Log.d(TAG, "getData: Called");
+        GetJsonData getJsonData = new GetJsonData("", Double.toString(lat), Double.toString(lon), MapViewFragment.this);
+        getJsonData.execute();
+    }
+
+    //plots the crime data onto the google maps
+    private void plotData(List<HistoricLocation> historicData){
+        if(googleMap != null){
+            googleMap.clear();//remove any other markers
+
+            //loops though thte data and adds marker to each specified location
+            for(HistoricLocation data : historicData){
+                LatLng usersLocation = new LatLng(data.getLat(), data.getLon());
+                Log.d(TAG, "onMapReady: LAT: " + data.getLat() + " LON: " + data.getLon());
+                googleMap.addMarker(new MarkerOptions().position(usersLocation).title("Marker Title").snippet("Marker Description"));
+            }
+        }
+    }
+
     @Override
     public void locationUpdate(double lat, double lon) {
         this.lat = lat;
         this.lon = lon;
         updateCamera();
+    }
+
+    @Override
+    public void onDataAvailable(List<HistoricLocation> historicLocationsData) {
+        Toast.makeText(getContext(),"Data size = " + historicLocationsData.size(), Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "onDataAvailable: Data size " + historicLocationsData.size());
+
+        plotData(historicLocationsData);
     }
 }
