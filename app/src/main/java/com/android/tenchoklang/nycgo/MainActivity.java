@@ -1,57 +1,59 @@
-package com.android.tenchoklang.nycgo;
+package com.example.aishwarya.stepcounter1;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
-
-
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            Fragment selectedFragment = null;
-
-
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    Toast.makeText(MainActivity.this, "Home Clicked", Toast.LENGTH_SHORT).show();
-                    break;
-                case R.id.navigation_dashboard:
-                    Toast.makeText(MainActivity.this, "DashBoard Clicked", Toast.LENGTH_SHORT).show();
-                    selectedFragment = new MapViewFragment();
-                    break;
-                case R.id.navigation_notifications:
-                    Toast.makeText(MainActivity.this, "Notification Clicked", Toast.LENGTH_SHORT).show();
-                    return true;
-            }
-
-            //load the fragment in the frame container
-            if(selectedFragment != null){
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, selectedFragment).commit();
-            }
-            return true;
-        }
-    };
+public class MainActivity extends Activity implements View.OnClickListener {
+    private TextView textView;
+    private EventHandler eventHandler = new EventHandler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        textView = (TextView)findViewById(R.id.counter);
+        findViewById(R.id.set_back).setOnClickListener(this);
+        findViewById(R.id.start).setOnClickListener(this);
+        findViewById(R.id.stop).setOnClickListener(this);
+    }
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new MapViewFragment()).commit();
-
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+    @Override
+    public void onResume() {
+        super.onResume();
+        StepCounterService.eventHandler = eventHandler;
+        textView.setText(String.valueOf(StepCounterService.steps));
     }
 
 
-}
 
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.set_back) {
+            StepCounterService.steps = 0;
+            textView.setText("0");
+        }
+        if (v.getId() == R.id.start) {
+            StepCounterService.eventHandler = eventHandler;
+            startService(new Intent(this, StepCounterService.class));
+        }
+        if (v.getId() == R.id.stop) {
+            stopService(new Intent(this, StepCounterService.class));
+        }
+    }
+
+
+    private class EventHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            textView.setText(String.valueOf(msg.what));
+        }
+    }
+}
