@@ -1,4 +1,4 @@
-package com.example.aishwarya.stepcounter1;
+package com.android.tenchoklang.nycgo;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;

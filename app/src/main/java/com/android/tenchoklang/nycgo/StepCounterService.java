@@ -1,4 +1,4 @@
-package com.example.aishwarya.stepcounter1;
+package com.android.tenchoklang.nycgo;
 
 import android.app.Service;
 import android.content.Context;
