@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -50,6 +51,8 @@ public class MapViewFragment extends Fragment implements UserLocationListener.On
     private UserLocationListener locationListener;
 
     private static final int REQUESTED_CODE_LOCATION = 1;
+
+    private static final int DISTANCE_TO_UNLOCK = 50;
 
     private FloatingActionButton floatingActionButton;
 
@@ -293,14 +296,35 @@ public class MapViewFragment extends Fragment implements UserLocationListener.On
     public void locationUpdate(double lat, double lon) {
         this.lat = lat;
         this.lon = lon;
+        getData();
         updateCamera();
+
     }
 
     @Override
     public void onDataAvailable(List<HistoricLocation> historicLocationsData) {
         Toast.makeText(getContext(),"Data size = " + historicLocationsData.size(), Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onDataAvailable: Data size " + historicLocationsData.size());
-
+        checkDistance(historicLocationsData);
         plotData(historicLocationsData);
+    }
+
+    private void checkDistance(List<HistoricLocation> historicLocationsData){
+        Log.d(TAG, "checkDistance: Check Distance Starts");
+        Location usersLoc = new Location("");
+        usersLoc.setLatitude(lat);
+        usersLoc.setLongitude(lon);
+
+        for(HistoricLocation location : historicLocationsData){
+            Location target = new Location("target");
+            target.setLatitude(location.getLat());
+            target.setLongitude(location.getLon());
+            if(usersLoc.distanceTo(target) < DISTANCE_TO_UNLOCK){
+                Log.d(TAG, "checkDistance: ****UNLOCKED MODEL****");
+            }else{
+                Log.d(TAG, "checkDistance: ****MODEL NO UNLOCKED****");
+            }
+
+        }
     }
 }

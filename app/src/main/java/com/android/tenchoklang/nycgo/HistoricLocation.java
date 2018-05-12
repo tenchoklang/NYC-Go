@@ -7,12 +7,12 @@ package com.android.tenchoklang.nycgo;
 public class HistoricLocation {
     private double lat;
     private double lon;
-    private String description;
+    private String imageUrl;
 
     public HistoricLocation(double lat, double lon, String description) {
         this.lat = lat;
         this.lon = lon;
-        this.description = description;
+        this.imageUrl = description;
     }
 
     public double getLat() {  return lat;  }
@@ -21,15 +21,15 @@ public class HistoricLocation {
     public double getLon() { return lon; }
     public void setLon(double lon) { this.lon = lon;  }
 
-    public String getDescription() { return description;  }
-    public void setDescription(String description) { this.description = description;  }
+    public String getDescription() { return imageUrl;  }
+    public void setDescription(String description) { this.imageUrl = description;  }
 
     @Override
     public String toString() {
         return "HistoricLocation{" +
                 "lat=" + lat +
                 ", lon=" + lon +
-                ", description='" + description + '\'' +
+                ", description='" + imageUrl + '\'' +
                 '}';
     }
 }

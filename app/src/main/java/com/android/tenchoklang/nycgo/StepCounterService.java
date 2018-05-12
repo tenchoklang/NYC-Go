@@ -9,8 +9,11 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 public class StepCounterService extends Service {
+    private static final String TAG = "StepCounterService";
+
     public static Handler eventHandler;
     public static int steps = 0;
     private SensorManager sensorManager;
@@ -42,6 +45,7 @@ public class StepCounterService extends Service {
         @Override
         public void handleMessage(Message msg) {
             steps++;
+            Log.d(TAG, "handleMessage: " + steps);
             if (eventHandler != null) {
                 eventHandler.sendEmptyMessage(steps);
             }
