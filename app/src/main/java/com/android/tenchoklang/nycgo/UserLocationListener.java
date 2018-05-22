@@ -96,15 +96,17 @@ public class UserLocationListener {
                 //Gets the last known Location to make waiting for the location faster
                 String locationProvider = LocationManager.GPS_PROVIDER;
                 Location location = mLocationManager.getLastKnownLocation(locationProvider);
-                lat = location.getLatitude();
-                lon = location.getLongitude();
-                //updates the class that implements the interface on the last known location while waiting on the GPS
-                locationListener.locationUpdate(lat, lon);
-                Log.d(TAG, "getUserLocation: Last Known Location LON: " + lat + "LAT: " + lon);
+                if(location != null){
+                    lat = location.getLatitude();
+                    lon = location.getLongitude();
+                    //updates the class that implements the interface on the last known location while waiting on the GPS
+                    locationListener.locationUpdate(lat, lon);
+                    Log.d(TAG, "getUserLocation: Last Known Location LON: " + lat + "LAT: " + lon);
+                }
 
                 //this is where we can update the camera
 
-                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,0, mLocationListener);
+                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,150, mLocationListener);
             }else{
                 Log.d(TAG, "getUserLocation: GPS Error");
             }

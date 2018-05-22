@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-;
 
 public class StepsFragment extends Fragment implements View.OnClickListener {
     private TextView textView;
