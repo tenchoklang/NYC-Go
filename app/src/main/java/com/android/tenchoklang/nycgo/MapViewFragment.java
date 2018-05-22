@@ -59,7 +59,7 @@ public class MapViewFragment extends Fragment implements UserLocationListener.On
 
     private static final int REQUESTED_CODE_LOCATION = 1;
 
-    private static final int DISTANCE_TO_UNLOCK = 90;
+    private static final int DISTANCE_TO_UNLOCK = 50;
 
     private FloatingActionButton floatingActionButton;
 
@@ -67,6 +67,8 @@ public class MapViewFragment extends Fragment implements UserLocationListener.On
 
     public final static String MY_GLOBAL_PREFS = "my_global_prefs";
     public final static String SAVED_HOLO_KEY = "saved_loc_key";
+
+    private static final String API_KEY = "KEY_HERE";
 
 
     @Override
@@ -315,7 +317,7 @@ public class MapViewFragment extends Fragment implements UserLocationListener.On
                 //and depending on that we can save it in the database
                 String photoUrl = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location="
                         +target.getLatitude()+","+target.getLongitude()
-                        +"&size=20x20&key=AIzaSyBhb4XTDgK8ODRMKQsK5gBX038F6ygy3BQ";
+                        +"&size=20x20&key=" + API_KEY;
                 Hologram newHologram = new Hologram(target.getLatitude(), target.getLongitude(), photoUrl);
 
                 saveLocation(newHologram);
